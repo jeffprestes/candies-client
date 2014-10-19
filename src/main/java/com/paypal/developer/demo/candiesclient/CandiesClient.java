@@ -139,7 +139,7 @@ public class CandiesClient {
             //client.connect(connOpts);
             System.out.println("Connected");
                                   
-            this.publish("Ei Adriano, ta me ouvindo?", client);
+            //this.publish("Ei Adriano, ta me ouvindo?", client);
             
             System.out.println("Subscribing to " + this.topic + " ...");
             IMqttToken subToken = client.subscribe(this.topic, this.qos);

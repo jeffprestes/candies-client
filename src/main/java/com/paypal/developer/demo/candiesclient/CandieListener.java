@@ -10,6 +10,8 @@ import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.RaspiPin;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -28,18 +30,23 @@ public class CandieListener implements MqttCallback {
     
     @Override
     public void connectionLost(Throwable th) {
-        System.out.println("Connection is closed");
+        System.out.println("Connection was closed");
         th.printStackTrace();
+        System.exit(0);
     }
 
     @Override
-    public void messageArrived(String topic, MqttMessage mm) throws Exception {
+    public void messageArrived(String topic, MqttMessage mm)  {
         System.out.println("Message arrived: " + mm.toString() + " at " + topic);
         if (mm.toString().equals("release"))  {
             pin.high();
             System.out.println("--> GPIO state should be: ON");
         
-            Thread.sleep(5000);
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(CandieListener.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
             // turn off gpio pin #01
             pin.low();
