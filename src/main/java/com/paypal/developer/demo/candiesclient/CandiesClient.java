@@ -26,23 +26,59 @@ public class CandiesClient {
     
     String topic        = "jeffprestes/candies/world";   
     int qos             = 2;
-    String broker       = "tcp://localhost:1883";
+    String broker       = "localhost";
     String clientId     = "2C:41:38:00:DD:AD";
+    String port         = "1883";
     MemoryPersistence persistence = new MemoryPersistence();
     MqttAsyncClient client;
     int gpioPort        = 7;
     //MqttClient client;
     
+    /**
+     * Constructor with default parameters to be used in localhost
+     */
     public CandiesClient() {
-        this.initialize(this.broker);
+        this.initialize();
     }
     
-    
+    /**
+     * Constructor with customized Broker Server
+     * @param parBroker IP Address or URL of MQTT Broker Server
+     */
     public CandiesClient(String parBroker)     {
         
-        String temp = "tcp://" + parBroker + ":1883";
+        this.broker = parBroker;
         
-        this.initialize(temp);
+        this.initialize();
+    }
+    
+    /**
+     * Constructor with customized Broker server and topic (queue)
+     * @param parBroker IP Address or URL of MQTT Broker Server
+     * @param parTopic Topic (queue name) where is this client must listen to or public messages
+     */
+    public CandiesClient(String parBroker, String parTopic)     {
+        
+        this.broker = parBroker;
+        this.topic = parTopic;
+        
+        this.initialize();
+    }
+    
+    /**
+     * Constructor with customized Broker server, topic (queue), clientID and Broker Server port
+     * @param parBroker IP Address or URL of MQTT Broker Server
+     * @param parTopic Topic (queue name) where is this client must listen to or public messages
+     * @param parClientId ClientID of this client to identify your messages to Broker
+     * @param parPort Port of MQTT Broker Server
+     */
+    public CandiesClient(String parBroker, String parTopic, String parClientId, String parPort) {
+        this.broker = parBroker;
+        this.clientId = parClientId;
+        this.topic = parTopic;
+        this.port = parPort;
+        
+        this.initialize();
     }
     
     public void publish(String msg, MqttAsyncClient client)  {
@@ -126,9 +162,12 @@ public class CandiesClient {
     }
     */
     
-    private void initialize(String parBroker)      {
+    private void initialize()      {
         try {
-            client = new MqttAsyncClient(parBroker, this.clientId, this.persistence);
+            
+            String temp = "tcp://" + this.broker + ":" + this.port;
+            
+            client = new MqttAsyncClient(temp, this.clientId, this.persistence);
             //client = new MqttClient(this.broker, this.clientId, this.persistence);
             MqttConnectOptions connOpts = new MqttConnectOptions();
             connOpts.setCleanSession(true);
