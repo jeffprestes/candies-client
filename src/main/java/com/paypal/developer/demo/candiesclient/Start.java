@@ -15,14 +15,23 @@ public class Start {
         
         CandiesClient cc;
         
-        if (args.length>0)  {
+        if (args.length == 1)  {
             if (args[0] != null)    {
                 cc  = new CandiesClient(args[0]);
             }   
+            
+        }   else if (args.length == 2)  {
+            if (args[0] != null && args[1] != null)    {
+                cc  = new CandiesClient(args[0], args[1]);
+            }   
+            
+        }   else if (args.length == 4)  {
+            if (args[0] != null && args[1] != null && args[2] != null && args[3] != null)    {
+                cc  = new CandiesClient(args[0], args[1], args[2], args[3]);
+            }   
+            
         }   else    {
             cc = new CandiesClient();
         }
-                
     }
-    
 }
