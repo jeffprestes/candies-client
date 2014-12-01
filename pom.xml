@@ -33,6 +33,11 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>com.paypal.developer.jeffprestes.speaker</groupId>
+            <artifactId>Speaker</artifactId>
+            <version>0.1</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

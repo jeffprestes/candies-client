@@ -10,6 +10,12 @@ import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.RaspiPin;
+import java.net.InetAddress;
+import java.net.InterfaceAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.util.Enumeration;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttAsyncClient;
 import org.eclipse.paho.client.mqttv3.MqttClient;
@@ -83,13 +89,13 @@ public class CandiesClient {
     
     public void publish(String msg, MqttAsyncClient client)  {
         
-        System.out.println("Publishing message: "+msg);
+        System.out.println("+Publishing message: "+msg);
         MqttMessage message = new MqttMessage(msg.getBytes());
         message.setQos(qos);
         
         try {
             client.publish(topic, message);
-            System.out.println("Message published");  
+            System.out.println("+Message published");  
             
         } catch(MqttException me) {
             System.out.println("reason "+me.getReasonCode());
@@ -103,13 +109,13 @@ public class CandiesClient {
     
     public void publish(String msg, MqttClient client)  {
         
-        System.out.println("Publishing message: "+msg);
+        System.out.println("+Publishing message: "+msg);
         MqttMessage message = new MqttMessage(msg.getBytes());
         message.setQos(qos);
         
         try {
             client.publish(topic, message);
-            System.out.println("Message published");  
+            System.out.println("+Message published");  
             
         } catch(MqttException me) {
             System.out.println("reason "+me.getReasonCode());
@@ -177,8 +183,6 @@ public class CandiesClient {
             conToken.waitForCompletion();
             //client.connect(connOpts);
             System.out.println("Connected");
-                                  
-            //this.publish("Ei Adriano, ta me ouvindo?", client);
             
             System.out.println("Subscribing to " + this.topic + " ...");
             IMqttToken subToken = client.subscribe(this.topic, this.qos);
@@ -190,8 +194,12 @@ public class CandiesClient {
             final GpioPinDigitalOutput pin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_07, "Motor", PinState.LOW);
             
             System.out.println("Defining Listener...");
-            client.setCallback(new CandieListener(pin));
+            client.setCallback(new CandieListener(pin, client, this.topic));
             System.out.println("Listener defined. Waiting for orders...");
+            
+            InetAddress address = InetAddress.getLocalHost();
+            
+            this.publish("Machine is initialized in " + CandiesClient.getIp() + " and waiting for orders...", client);
             
         } catch(MqttException me) {
             System.out.println("reason "+me.getReasonCode());
@@ -200,6 +208,30 @@ public class CandiesClient {
             System.out.println("cause "+me.getCause());
             System.out.println("excep "+me);
             me.printStackTrace();
+        } catch (UnknownHostException ex) {
+            System.err.println(ex.getLocalizedMessage());
+            ex.printStackTrace();
         }
+    }
+    
+    
+    private static String getIp()   {
+        
+        String data = "";
+            
+        try {
+            Enumeration<NetworkInterface> b = NetworkInterface.getNetworkInterfaces();
+            while( b.hasMoreElements()) {
+
+                for ( InterfaceAddress f : b.nextElement().getInterfaceAddresses())     {
+                    System.out.println("Machine network interface: " + f.getAddress() + " - " + b.nextElement().getName());
+                    data = f.getAddress().getHostAddress();
+                }
+            }
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+
+        return data;
     }
 }
