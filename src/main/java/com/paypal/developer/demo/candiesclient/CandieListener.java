@@ -63,7 +63,7 @@ public class CandieListener implements MqttCallback {
             pin.low();
             System.out.println("--> GPIO state should be: OFF");
             
-            Speaker.speak("Thank&nbsp;You", "en");
+            Speaker.speak("Obrigado&nbsp;Obrigado", "pt");
             
             this.publish("candies delivered");
         }
