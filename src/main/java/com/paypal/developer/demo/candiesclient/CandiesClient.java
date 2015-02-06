@@ -222,14 +222,15 @@ public class CandiesClient {
         try {
             Enumeration<NetworkInterface> b = NetworkInterface.getNetworkInterfaces();
             while( b.hasMoreElements()) {
-
                 for ( InterfaceAddress f : b.nextElement().getInterfaceAddresses())     {
                     System.out.println("Machine network interface: " + f.getAddress() + " - " + b.nextElement().getName());
                     data = f.getAddress().getHostAddress();
                 }
             }
-        } catch (SocketException e) {
-            e.printStackTrace();
+        } catch (Exception ex)      {
+            System.err.println("Error when to try to get IP Address: " + ex.getLocalizedMessage());
+            System.out.println("System will still working...");
+            ex.printStackTrace();
         }
 
         return data;
