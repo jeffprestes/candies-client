@@ -23,13 +23,13 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
  *
  * @author jeffprestes
  */
-public class CandieListener implements MqttCallback {
+public class CandiesMqttListener implements MqttCallback {
 
     private GpioPinDigitalOutput pin;
     private MqttAsyncClient client;
     private String queue;
     
-    public CandieListener(GpioPinDigitalOutput parPin, MqttAsyncClient client, String queue)  {
+    public CandiesMqttListener(GpioPinDigitalOutput parPin, MqttAsyncClient client, String queue)  {
         this.pin = parPin;
         this.client = client;
         this.queue = queue;
@@ -50,17 +50,17 @@ public class CandieListener implements MqttCallback {
             this.publish("yes");
             
         } else if (mm.toString().equals("release"))  {
-            pin.high();
+            pin.low();
             System.out.println("--> GPIO state should be: ON");
         
             try {
-                Thread.sleep(5000);
+                Thread.sleep(25000);
             } catch (InterruptedException ex) {
-                Logger.getLogger(CandieListener.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(CandiesMqttListener.class.getName()).log(Level.SEVERE, null, ex);
             }
 
             // turn off gpio pin #01
-            pin.low();
+            pin.high();
             System.out.println("--> GPIO state should be: OFF");
             
             Speaker.speak("Obrigado&nbsp;Obrigado", "pt");

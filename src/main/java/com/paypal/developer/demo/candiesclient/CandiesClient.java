@@ -37,7 +37,7 @@ public class CandiesClient {
     String port         = "1883";
     MemoryPersistence persistence = new MemoryPersistence();
     MqttAsyncClient client;
-    int gpioPort        = 7;
+    int gpioPort        = 1;
     //MqttClient client;
     
     /**
@@ -169,6 +169,11 @@ public class CandiesClient {
     */
     
     private void initialize()      {
+        
+        System.out.println("Enabling GPIO " + gpioPort);
+        final GpioController gpio = GpioFactory.getInstance();
+        final GpioPinDigitalOutput pin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "Motor", PinState.HIGH);
+        
         try {
             
             String temp = "tcp://" + this.broker + ":" + this.port;
@@ -189,12 +194,8 @@ public class CandiesClient {
             subToken.waitForCompletion();
             System.out.println("Subscribed to " + this.topic + " ...");
             
-            System.out.println("Enabling GPIO " + gpioPort);
-            final GpioController gpio = GpioFactory.getInstance();
-            final GpioPinDigitalOutput pin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_07, "Motor", PinState.LOW);
-            
             System.out.println("Defining Listener...");
-            client.setCallback(new CandieListener(pin, client, this.topic));
+            client.setCallback(new CandiesMqttListener(pin, client, this.topic));
             System.out.println("Listener defined. Waiting for orders...");
             
             InetAddress address = InetAddress.getLocalHost();
