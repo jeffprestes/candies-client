@@ -1,0 +1,152 @@
+[
+    {
+        "id": "773c73d8.7c83ac",
+        "type": "tab",
+        "label": "Candy Machine"
+    },
+    {
+        "id": "40eaac9c.615254",
+        "type": "rpi-gpio out",
+        "z": "773c73d8.7c83ac",
+        "name": "Motor",
+        "pin": "12",
+        "set": true,
+        "level": "0",
+        "out": "out",
+        "x": 758,
+        "y": 228.5,
+        "wires": []
+    },
+    {
+        "id": "32a46c4d.77a9c4",
+        "type": "inject",
+        "z": "773c73d8.7c83ac",
+        "name": "Liga",
+        "topic": "",
+        "payload": "1",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 102,
+        "y": 172.25,
+        "wires": [
+            [
+                "f2cfa51d.6ab168",
+                "931ec6a3.c6dde8"
+            ]
+        ]
+    },
+    {
+        "id": "96aa89f2.e8edf8",
+        "type": "inject",
+        "z": "773c73d8.7c83ac",
+        "name": "Desliga",
+        "topic": "",
+        "payload": "0",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 102,
+        "y": 243.25,
+        "wires": [
+            [
+                "40eaac9c.615254",
+                "f2cfa51d.6ab168"
+            ]
+        ]
+    },
+    {
+        "id": "f2cfa51d.6ab168",
+        "type": "debug",
+        "z": "773c73d8.7c83ac",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "false",
+        "x": 584,
+        "y": 89,
+        "wires": []
+    },
+    {
+        "id": "7a1d1542.b197ec",
+        "type": "mqtt in",
+        "z": "773c73d8.7c83ac",
+        "name": "server",
+        "topic": "jeffprestes/candies/paulista",
+        "qos": "1",
+        "broker": "e3d53260.881d4",
+        "x": 99,
+        "y": 317.25,
+        "wires": [
+            [
+                "8e8162e2.399c4",
+                "f2cfa51d.6ab168"
+            ]
+        ]
+    },
+    {
+        "id": "931ec6a3.c6dde8",
+        "type": "trigger",
+        "z": "773c73d8.7c83ac",
+        "op1": "1",
+        "op2": "0",
+        "op1type": "str",
+        "op2type": "str",
+        "duration": "5",
+        "extend": false,
+        "units": "s",
+        "reset": "0",
+        "name": "Distribui",
+        "x": 547.5,
+        "y": 301,
+        "wires": [
+            [
+                "40eaac9c.615254"
+            ]
+        ]
+    },
+    {
+        "id": "8e8162e2.399c4",
+        "type": "switch",
+        "z": "773c73d8.7c83ac",
+        "name": "CheckMsg",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 1,
+        "x": 303.5,
+        "y": 317.25,
+        "wires": [
+            [
+                "931ec6a3.c6dde8"
+            ]
+        ]
+    },
+    {
+        "id": "e3d53260.881d4",
+        "type": "mqtt-broker",
+        "z": "",
+        "broker": "iot.eclipse.org",
+        "port": "1883",
+        "clientid": "whitesnow",
+        "usetls": false,
+        "compatmode": true,
+        "keepalive": "3600",
+        "cleansession": true,
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "birthTopic": "jeffprestes/candies/paulista",
+        "birthQos": "1",
+        "birthPayload": "maquina_ativa"
+    }
+]
